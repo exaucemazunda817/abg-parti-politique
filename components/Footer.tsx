@@ -5,14 +5,15 @@ import { party } from "@/lib/content";
 export default function Footer() {
   return (
     <footer className="mt-16 border-t border-white/10 bg-abg-blue-dark text-white">
+      <div className="abg-accent-bar" />
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-3">
         <div className="flex items-start gap-3">
           <Image
-            src="/logo-abg.jpg"
+            src="/logo-abg.png"
             alt={`Logo du parti ${party.sigle}`}
             width={48}
             height={48}
-            className="h-12 w-12 shrink-0 rounded-md object-cover"
+            className="h-12 w-12 shrink-0 object-contain"
           />
           <div>
             <p className="font-extrabold tracking-tight">{party.sigle}</p>

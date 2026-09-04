@@ -4,12 +4,13 @@
   --background: #f7f5ee;
   --foreground: #1c1c1c;
 
-  --abg-green: #6f7d2c;
-  --abg-green-dark: #4d5720;
-  --abg-blue: #1d4d8c;
-  --abg-blue-dark: #123457;
-  --abg-red: #9c2b2b;
-  --abg-red-dark: #6f1e1e;
+  /* Palette échantillonnée directement sur le logo officiel (public/logo-abg.png) */
+  --abg-green: #587211;
+  --abg-green-dark: #384a0b;
+  --abg-blue: #013f7d;
+  --abg-blue-dark: #082a4a;
+  --abg-red: #6a0d1b;
+  --abg-red-dark: #470912;
   --abg-cream: #f7f5ee;
   --abg-gold: #d9a441;
 }
@@ -38,4 +39,20 @@ body {
   border: 1px dashed var(--abg-gold);
   background: #fbf3df;
   color: #6b5417;
+}
+
+/* Bande d'accent diagonale bleu/rouge, clin d'œil au drapé de la carte sur le logo */
+.abg-accent-bar {
+  height: 6px;
+  background: linear-gradient(
+    100deg,
+    var(--abg-blue) 0%,
+    var(--abg-blue) 48%,
+    var(--abg-red) 52%,
+    var(--abg-red) 100%
+  );
+}
+
+.abg-logo-shadow {
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.35));
 }

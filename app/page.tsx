@@ -13,16 +13,16 @@ export default function Home() {
     <div>
       {/* Hero */}
       <section className="bg-abg-green-dark text-white">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 px-4 py-16 text-center sm:px-6 md:py-24">
+        <div className="mx-auto flex max-w-5xl flex-col items-center gap-8 px-4 py-16 text-center sm:px-6 md:flex-row md:items-center md:gap-12 md:py-24 md:text-left">
           <Image
-            src="/logo-abg.jpg"
+            src="/logo-abg.png"
             alt={`Logo du parti ${party.sigle}`}
-            width={120}
-            height={120}
-            className="h-28 w-28 rounded-xl object-cover shadow-lg ring-4 ring-white/20 sm:h-32 sm:w-32"
+            width={220}
+            height={220}
+            className="abg-logo-shadow h-32 w-32 shrink-0 object-contain sm:h-40 sm:w-40 md:h-48 md:w-48"
             priority
           />
-          <div>
+          <div className="flex flex-col items-center md:items-start">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/70">
               République Démocratique du Congo
             </p>
@@ -32,50 +32,50 @@ export default function Home() {
             <p className="mt-3 text-lg font-medium text-abg-gold sm:text-xl">
               « {party.devise} »
             </p>
-          </div>
-          <p className="max-w-2xl text-base text-white/85 sm:text-lg">
-            {missionPlaceholder}
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link
-              href="/le-parti"
-              className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-abg-green-dark transition-colors hover:bg-white/90"
-            >
-              Découvrir le parti
-            </Link>
-            <Link
-              href="/contact"
-              className="rounded-full border border-white/40 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
-            >
-              Nous rejoindre
-            </Link>
+            <p className="mt-4 max-w-2xl text-base text-white/85 sm:text-lg">
+              {missionPlaceholder}
+            </p>
+            <div className="mt-6 flex flex-wrap justify-center gap-4 md:justify-start">
+              <Link
+                href="/le-parti"
+                className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-abg-green-dark transition-colors hover:bg-white/90"
+              >
+                Découvrir le parti
+              </Link>
+              <Link
+                href="/contact"
+                className="rounded-full border border-white/40 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+              >
+                Nous rejoindre
+              </Link>
+            </div>
           </div>
         </div>
       </section>
+      <div className="abg-accent-bar" />
 
-      {/* Enregistrement officiel */}
+      {/* Enregistrement officiel + Président National */}
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-        <div className="rounded-xl border border-abg-blue/20 bg-white p-6 shadow-sm">
-          <p className="text-sm font-semibold uppercase tracking-wide text-abg-blue">
-            Parti légalement enregistré
-          </p>
-          <p className="mt-2 text-foreground/80">{party.enregistrement}</p>
-        </div>
-      </section>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="rounded-xl border border-abg-blue/20 bg-white p-6 shadow-sm">
+            <p className="text-sm font-semibold uppercase tracking-wide text-abg-blue">
+              Parti légalement enregistré
+            </p>
+            <p className="mt-2 text-foreground/80">{party.enregistrement}</p>
+          </div>
 
-      {/* Président National */}
-      <section className="mx-auto max-w-6xl px-4 py-4 sm:px-6">
-        <div className="rounded-xl bg-abg-blue-dark px-6 py-8 text-center text-white sm:py-10">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/60">
-            {presidentNational.fonction}
-          </p>
-          <p className="mt-2 text-2xl font-bold sm:text-3xl">{presidentNational.nom}</p>
-          <Link
-            href="/direction"
-            className="mt-4 inline-block text-sm font-medium text-abg-gold underline underline-offset-4 hover:text-white"
-          >
-            Voir toute la direction nationale →
-          </Link>
+          <div className="rounded-xl bg-abg-blue-dark px-6 py-8 text-center text-white">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/60">
+              {presidentNational.fonction}
+            </p>
+            <p className="mt-2 text-2xl font-bold sm:text-3xl">{presidentNational.nom}</p>
+            <Link
+              href="/direction"
+              className="mt-4 inline-block text-sm font-medium text-abg-gold underline underline-offset-4 hover:text-white"
+            >
+              Voir toute la direction nationale →
+            </Link>
+          </div>
         </div>
       </section>
 

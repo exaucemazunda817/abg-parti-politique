@@ -17,11 +17,11 @@ export default function Header() {
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <Link href="/" className="flex items-center gap-3">
           <Image
-            src="/logo-abg.jpg"
+            src="/logo-abg.png"
             alt={`Logo du parti ${party.sigle}`}
-            width={44}
-            height={44}
-            className="h-11 w-11 rounded-md object-cover"
+            width={48}
+            height={48}
+            className="h-12 w-12 object-contain"
             priority
           />
           <span className="flex flex-col leading-tight">
@@ -62,6 +62,7 @@ export default function Header() {
           </Link>
         ))}
       </nav>
+      <div className="abg-accent-bar" />
     </header>
   );
 }
