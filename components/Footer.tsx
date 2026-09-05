@@ -59,6 +59,11 @@ export default function Footer() {
                 Contact
               </Link>
             </li>
+            <li>
+              <Link href="/connexion" className="hover:text-white">
+                Espace dirigeants
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

@@ -57,13 +57,27 @@ export default function Header() {
             );
           })}
         </nav>
-        <Link
-          href="/adhesion"
-          className="rounded-full bg-abg-red px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-abg-red-dark md:inline-block"
-        >
-          Devenir membre
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/connexion"
+            className="hidden rounded-full border-2 border-abg-blue-dark px-4 py-[7px] text-sm font-semibold text-abg-blue-dark transition-colors hover:bg-abg-blue-dark hover:text-white md:inline-block"
+          >
+            Espace dirigeants
+          </Link>
+          <Link
+            href="/adhesion"
+            className="rounded-full bg-abg-red px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-abg-red-dark md:inline-block"
+          >
+            Devenir membre
+          </Link>
+        </div>
       </div>
+      <Link
+        href="/connexion"
+        className="flex items-center justify-center gap-2 border-t border-black/5 bg-abg-blue-dark/5 py-2.5 text-sm font-semibold text-abg-blue-dark md:hidden"
+      >
+        Espace dirigeants
+      </Link>
       <nav className="flex gap-2 overflow-x-auto border-t border-black/5 px-4 py-2.5 text-sm font-medium md:hidden">
         {navLinks.map((link) => {
           const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
