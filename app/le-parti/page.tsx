@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import PageHero from "@/components/PageHero";
 import PlaceholderNote from "@/components/PlaceholderNote";
 import {
   histoirePlaceholder,
@@ -11,56 +12,59 @@ export const metadata: Metadata = {
   title: `Le Parti — ${party.sigle}`,
 };
 
+const VALUE_ACCENTS = ["border-abg-blue", "border-abg-green", "border-abg-red", "border-abg-gold"];
+
 export default function LePartiPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
-      <h1 className="text-3xl font-extrabold tracking-tight text-abg-green-dark sm:text-4xl">
-        Le Parti
-      </h1>
-      <p className="mt-2 text-foreground/70">
-        {party.nomComplet} ({party.sigle}) — « {party.devise} »
-      </p>
+    <div>
+      <PageHero
+        eyebrow="Qui nous sommes"
+        title="Le Parti"
+        subtitle={`${party.nomComplet} (${party.sigle}) — « ${party.devise} »`}
+      />
 
-      <section className="mt-10">
-        <h2 className="text-xl font-bold text-abg-blue-dark">Enregistrement légal</h2>
-        <p className="mt-3 text-foreground/80">{party.enregistrement}</p>
-        <p className="mt-2 text-foreground/80">
-          Siège social : {party.siege}
-        </p>
-      </section>
+      <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
+        <section className="rounded-2xl border border-abg-blue/20 bg-white p-6 shadow-sm sm:p-8">
+          <h2 className="text-xl font-bold text-abg-blue-dark">Enregistrement légal</h2>
+          <p className="mt-3 text-foreground/80">{party.enregistrement}</p>
+          <p className="mt-2 text-foreground/80">Siège social : {party.siege}</p>
+        </section>
 
-      <section className="mt-10">
-        <h2 className="text-xl font-bold text-abg-blue-dark">Mission</h2>
-        <p className="mt-3 text-foreground/80">{missionPlaceholder}</p>
-        <div className="mt-4">
-          <PlaceholderNote />
-        </div>
-      </section>
+        <section className="mt-8 rounded-2xl bg-abg-green-dark/5 p-6 sm:p-8">
+          <h2 className="text-xl font-bold text-abg-green-dark">Mission</h2>
+          <p className="mt-3 text-foreground/80">{missionPlaceholder}</p>
+          <div className="mt-4">
+            <PlaceholderNote />
+          </div>
+        </section>
 
-      <section className="mt-10">
-        <h2 className="text-xl font-bold text-abg-blue-dark">Histoire</h2>
-        <p className="mt-3 text-foreground/80">{histoirePlaceholder}</p>
-        <div className="mt-4">
-          <PlaceholderNote />
-        </div>
-      </section>
+        <section className="mt-8">
+          <h2 className="text-xl font-bold text-abg-blue-dark">Histoire</h2>
+          <p className="mt-3 text-foreground/80">{histoirePlaceholder}</p>
+          <div className="mt-4">
+            <PlaceholderNote />
+          </div>
+        </section>
 
-      <section className="mt-10">
-        <h2 className="text-xl font-bold text-abg-blue-dark">Nos valeurs</h2>
-        <ul className="mt-3 grid gap-3 sm:grid-cols-2">
-          {valeursPlaceholder.map((valeur) => (
-            <li
-              key={valeur}
-              className="rounded-lg border border-black/10 bg-white p-4 text-sm text-foreground/80 shadow-sm"
-            >
-              {valeur}
-            </li>
-          ))}
-        </ul>
-        <div className="mt-4">
-          <PlaceholderNote />
-        </div>
-      </section>
+        <section className="mt-10">
+          <h2 className="text-xl font-bold text-abg-green-dark">Nos valeurs</h2>
+          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+            {valeursPlaceholder.map((valeur, i) => (
+              <li
+                key={valeur}
+                className={`rounded-xl border-l-4 bg-white p-4 text-sm text-foreground/80 shadow-sm ${VALUE_ACCENTS[i % VALUE_ACCENTS.length]}`}
+              >
+                {valeur}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-4">
+            <PlaceholderNote>
+              Les valeurs officielles du parti seront listées ici une fois fournies.
+            </PlaceholderNote>
+          </div>
+        </section>
+      </div>
     </div>
   );
 }

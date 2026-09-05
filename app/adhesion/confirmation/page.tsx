@@ -28,7 +28,7 @@ export default async function ConfirmationPage({
         enregistrement en ligne, en attendant la validation de votre dossier.
       </p>
 
-      <div className="mt-8 rounded-2xl border border-black/10 bg-white p-6 shadow-sm">
+      <div className="mt-8 rounded-2xl border-t-4 border-abg-blue-dark bg-white p-6 shadow-sm">
         <p className="text-sm text-foreground/60">Numéro de dossier</p>
         <p className="font-mono text-lg font-bold text-abg-blue-dark">{member.id}</p>
         <a

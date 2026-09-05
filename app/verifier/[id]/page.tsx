@@ -34,7 +34,7 @@ export default async function VerifierPage({
         {party.sigle}
       </h1>
 
-      <div className="mt-8 rounded-2xl border border-black/10 bg-white p-6 shadow-sm">
+      <div className="mt-8 rounded-2xl border-t-4 border-abg-green-dark bg-white p-6 shadow-sm">
         <p className="text-lg font-bold text-foreground">
           {member.prenom} {member.nom}
         </p>
