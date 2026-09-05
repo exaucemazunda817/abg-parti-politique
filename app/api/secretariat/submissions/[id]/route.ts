@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { sendEmail, submissionTreatedEmail } from "@/lib/email";
+import { ROLES } from "@/lib/session";
 
 export async function PATCH(
   request: NextRequest,
@@ -25,6 +27,14 @@ export async function PATCH(
       treatedAt: status === "TRAITE" ? new Date() : null,
     },
   });
+
+  if (status === "TRAITE" && submission.status !== "TRAITE" && submission.email) {
+    const { subject, html } = submissionTreatedEmail({
+      sujet: submission.sujet,
+      destinataireLabel: ROLES.SECRETARIAT.label,
+    });
+    await sendEmail({ to: submission.email, subject, html });
+  }
 
   return NextResponse.json({ ok: true });
 }

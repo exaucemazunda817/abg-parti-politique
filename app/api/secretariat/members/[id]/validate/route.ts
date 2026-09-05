@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { party } from "@/lib/content";
+import { adhesionValidatedEmail, sendEmail } from "@/lib/email";
 
 export async function POST(
   _request: NextRequest,
@@ -29,6 +31,15 @@ export async function POST(
       rejectedReason: null,
     },
   });
+
+  if (updated.email) {
+    const { subject, html } = adhesionValidatedEmail({
+      prenom: updated.prenom,
+      membershipNo: updated.membershipNo!,
+      siege: party.siege,
+    });
+    await sendEmail({ to: updated.email, subject, html });
+  }
 
   return NextResponse.json({ ok: true, membershipNo: updated.membershipNo });
 }
