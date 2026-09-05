@@ -12,7 +12,6 @@ const navLinks = [
   { href: "/programme", label: "Programme" },
   { href: "/actualites", label: "Actualités" },
   { href: "/contact", label: "Contact" },
-  { href: "/adhesion", label: "Adhésion" },
 ];
 
 export default function Header() {
@@ -39,14 +38,14 @@ export default function Header() {
             </span>
           </span>
         </Link>
-        <nav className="hidden gap-1 text-sm font-medium md:flex">
+        <nav className="hidden shrink-0 gap-1 text-sm font-medium lg:flex">
           {navLinks.map((link) => {
             const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`rounded-full px-3.5 py-2 transition-colors ${
+                className={`whitespace-nowrap rounded-full px-3.5 py-2 text-center transition-colors ${
                   isActive
                     ? "bg-abg-blue-dark text-white"
                     : "text-foreground/70 hover:bg-abg-blue-dark/10 hover:text-abg-blue-dark"
@@ -57,16 +56,16 @@ export default function Header() {
             );
           })}
         </nav>
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <Link
             href="/connexion"
-            className="hidden rounded-full border-2 border-abg-blue-dark px-4 py-[7px] text-sm font-semibold text-abg-blue-dark transition-colors hover:bg-abg-blue-dark hover:text-white md:inline-block"
+            className="hidden whitespace-nowrap rounded-full border-2 border-abg-blue-dark px-4 py-[7px] text-center text-sm font-semibold text-abg-blue-dark transition-colors hover:bg-abg-blue-dark hover:text-white lg:inline-block"
           >
             Espace dirigeants
           </Link>
           <Link
             href="/adhesion"
-            className="rounded-full bg-abg-red px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-abg-red-dark md:inline-block"
+            className="whitespace-nowrap rounded-full bg-abg-red px-4 py-2 text-center text-sm font-semibold text-white transition-colors hover:bg-abg-red-dark lg:inline-block"
           >
             Devenir membre
           </Link>
@@ -74,11 +73,11 @@ export default function Header() {
       </div>
       <Link
         href="/connexion"
-        className="flex items-center justify-center gap-2 border-t border-black/5 bg-abg-blue-dark/5 py-2.5 text-sm font-semibold text-abg-blue-dark md:hidden"
+        className="flex items-center justify-center gap-2 border-t border-black/5 bg-abg-blue-dark/5 py-2.5 text-sm font-semibold text-abg-blue-dark lg:hidden"
       >
         Espace dirigeants
       </Link>
-      <nav className="flex gap-2 overflow-x-auto border-t border-black/5 px-4 py-2.5 text-sm font-medium md:hidden">
+      <nav className="flex gap-2 overflow-x-auto border-t border-black/5 px-4 py-2.5 text-sm font-medium lg:hidden">
         {navLinks.map((link) => {
           const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
           return (
