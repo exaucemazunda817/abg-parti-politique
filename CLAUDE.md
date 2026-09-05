@@ -161,18 +161,30 @@ Mazunda** — il s'agit d'un vrai parti politique enregistré, pas d'un exercice
 Mazunda (`~/Downloads/logo parti.jpg`, retrouvé après recherche — la première tentative de
 récupération directe depuis le chat avait échoué faute d'accès disque à l'image collée).
 
+## Notifications par e-mail (ajouté le 05/09/2026)
+`lib/email.ts` — appel direct à l'API REST de Resend (pas de SDK), déclenché quand :
+- une adhésion est validée ou rejetée (`app/api/secretariat/members/[id]/validate|reject`) ;
+- une soumission (message/doléance/proposition) passe au statut `TRAITE`, sur les 3 routes
+  de changement de statut (Secrétariat, Président, chaque Secrétaire National).
+
+Envoyé uniquement si la personne a renseigné son e-mail (champ optionnel sur les deux
+formulaires publics — beaucoup ne le rempliront pas, le téléphone étant le contact
+principal en RDC). Tant que `RESEND_API_KEY`/`EMAIL_FROM` ne sont pas dans `.env` (ABG n'a
+pas encore de nom de domaine à vérifier dans Resend), l'envoi échoue silencieusement
+(warning console) sans jamais bloquer l'action admin elle-même. **Canal choisi par Mazunda
+en connaissance de cause** : plus simple à activer aujourd'hui que SMS (compte fournisseur
+à créer) ou WhatsApp (vérification Meta Business), au prix d'une portée plus faible dans le
+public congolais — à revoir plus tard si besoin, `lib/email.ts` n'est pas couplé au reste.
+
 ## Reste à faire
 - Contenu définitif de toutes les sections `[À COMPLÉTER]`
 - Nom de domaine + déploiement (probablement Vercel, comme les autres projets de Mazunda) —
   **implique de choisir une vraie base de données de production** (SQLite ne convient pas
   à Vercel/serverless, contrairement au dev local)
+- Une fois le nom de domaine choisi : le vérifier dans Resend et renseigner
+  `RESEND_API_KEY`/`EMAIL_FROM` pour activer réellement les notifications e-mail
+  (actuellement branchées mais silencieuses, voir section ci-dessus)
 - Décider si une page "Actualités" avec vrai système de publication est nécessaire à terme
-- **Canal de notification** (SMS/WhatsApp/email) pour prévenir un demandeur d'adhésion ou
-  l'auteur d'un message quand son dossier est traité, plutôt que de compter sur lui pour
-  revérifier son statut lui-même — **prochain chantier convenu avec Mazunda le 05/09/2026**,
-  choix du canal encore en attente (compromis simplicité de mise en place vs canal
-  réellement consulté par le public congolais — voir échange du 05/09 pour le détail des
-  options : email/SMS/WhatsApp).
 - Comptes nominatifs par personne plutôt que mot de passe partagé par poste, si Mazunda le
   demande un jour — la structure de `lib/session.ts` ne s'y oppose pas mais ce n'est pas
   construit.
