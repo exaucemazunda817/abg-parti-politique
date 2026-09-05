@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Prisma 7 : l'URL de connexion ne se déclare plus ici mais dans prisma.config.ts
+// (pour les commandes migrate/db push) et via un adapter passé au PrismaClient
+// (pour l'exécution) — voir lib/db.ts.
+datasource db {
+  provider = "sqlite"
+}
+
+// Statuts possibles : "PENDING" (en attente), "VALIDATED" (validé, carte
+// officielle à récupérer au secrétariat), "REJECTED" (rejeté).
+model Member {
+  id          String   @id @default(cuid())
+  accessToken String   @unique @default(cuid())
+  status      String   @default("PENDING")
+
+  membershipNo String? @unique
+
+  nom           String
+  postNom       String
+  prenom        String
+  sexe          String
+  dateNaissance DateTime
+  lieuNaissance String
+  etatCivil     String?
+  profession    String?
+
+  province String
+  ville    String
+  commune  String?
+  avenue   String?
+
+  telephone String
+  email     String?
+
+  pieceIdentiteType   String?
+  pieceIdentiteNumero String?
+
+  photoPath String
+
+  section String?
+
+  createdAt      DateTime  @default(now())
+  validatedAt    DateTime?
+  rejectedAt     DateTime?
+  rejectedReason String?
+
+  @@index([status])
+}

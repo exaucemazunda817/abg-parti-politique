@@ -43,7 +43,7 @@ export default function Home() {
                 Découvrir le parti
               </Link>
               <Link
-                href="/contact"
+                href="/adhesion"
                 className="rounded-full border border-white/40 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
               >
                 Nous rejoindre

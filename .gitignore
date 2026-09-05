@@ -32,9 +32,19 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
+
+# base de données locale (dev) — DATABASE_URL="file:./dev.db" résout à la racine du projet
+/dev.db
+/dev.db-journal
+/prisma/dev.db
+/prisma/dev.db-journal
+
+# photos des fiches d'adhésion — données personnelles, jamais commitées
+/storage/
 
 # typescript
 *.tsbuildinfo

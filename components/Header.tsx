@@ -9,6 +9,7 @@ const navLinks = [
   { href: "/programme", label: "Programme" },
   { href: "/actualites", label: "Actualités" },
   { href: "/contact", label: "Contact" },
+  { href: "/adhesion", label: "Adhésion" },
 ];
 
 export default function Header() {
@@ -45,10 +46,10 @@ export default function Header() {
           ))}
         </nav>
         <Link
-          href="/contact"
+          href="/adhesion"
           className="rounded-full bg-abg-red px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-abg-red-dark md:inline-block"
         >
-          Nous contacter
+          Devenir membre
         </Link>
       </div>
       <nav className="flex gap-4 overflow-x-auto border-t border-black/5 px-4 py-2 text-sm font-medium text-foreground/80 md:hidden">
