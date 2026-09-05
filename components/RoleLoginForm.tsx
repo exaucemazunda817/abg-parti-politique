@@ -38,21 +38,21 @@ export default function RoleLoginForm({ role, spacePath }: { role: Role; spacePa
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <label className="block text-sm">
-        <span className="mb-1 block font-medium text-foreground/80">Mot de passe</span>
+        <span className="mb-1.5 block font-medium text-foreground/80">Mot de passe</span>
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
           autoFocus
-          className="w-full rounded-lg border border-black/15 bg-white px-3 py-2 focus:border-abg-blue focus:outline-none focus:ring-1 focus:ring-abg-blue"
+          className="w-full rounded-xl border border-black/15 bg-white px-4 py-2.5 shadow-sm transition-colors focus:border-abg-blue focus:outline-none focus:ring-2 focus:ring-abg-blue/30"
         />
       </label>
       {error && <p className="text-sm text-abg-red">{error}</p>}
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-full bg-abg-blue-dark px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 disabled:opacity-60"
+        className="w-full rounded-full bg-abg-blue-dark px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90 disabled:opacity-60"
       >
         {loading ? "Connexion…" : "Se connecter"}
       </button>

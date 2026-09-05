@@ -25,7 +25,7 @@ export default function AdhesionPage() {
           </Link>
         </p>
 
-        <div className="mt-6 rounded-2xl border border-black/10 bg-abg-cream/60 p-6 sm:p-8">
+        <div className="mt-6">
           <AdhesionForm />
         </div>
       </div>
