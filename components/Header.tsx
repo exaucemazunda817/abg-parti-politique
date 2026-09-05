@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { party } from "@/lib/content";
 
 const navLinks = [
@@ -13,6 +16,8 @@ const navLinks = [
 ];
 
 export default function Header() {
+  const pathname = usePathname();
+
   return (
     <header className="sticky top-0 z-40 border-b border-black/10 bg-abg-cream/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
@@ -34,16 +39,23 @@ export default function Header() {
             </span>
           </span>
         </Link>
-        <nav className="hidden gap-6 text-sm font-medium text-foreground/80 md:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="transition-colors hover:text-abg-red"
-            >
-              {link.label}
-            </Link>
-          ))}
+        <nav className="hidden gap-1 text-sm font-medium md:flex">
+          {navLinks.map((link) => {
+            const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`rounded-full px-3.5 py-2 transition-colors ${
+                  isActive
+                    ? "bg-abg-blue-dark text-white"
+                    : "text-foreground/70 hover:bg-abg-blue-dark/10 hover:text-abg-blue-dark"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
         <Link
           href="/adhesion"
@@ -52,16 +64,23 @@ export default function Header() {
           Devenir membre
         </Link>
       </div>
-      <nav className="flex gap-4 overflow-x-auto border-t border-black/5 px-4 py-2 text-sm font-medium text-foreground/80 md:hidden">
-        {navLinks.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className="shrink-0 transition-colors hover:text-abg-red"
-          >
-            {link.label}
-          </Link>
-        ))}
+      <nav className="flex gap-2 overflow-x-auto border-t border-black/5 px-4 py-2.5 text-sm font-medium md:hidden">
+        {navLinks.map((link) => {
+          const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
+          return (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`shrink-0 rounded-full px-3 py-1.5 transition-colors ${
+                isActive
+                  ? "bg-abg-blue-dark text-white"
+                  : "bg-black/5 text-foreground/70 hover:bg-abg-blue-dark/10"
+              }`}
+            >
+              {link.label}
+            </Link>
+          );
+        })}
       </nav>
       <div className="abg-accent-bar" />
     </header>
