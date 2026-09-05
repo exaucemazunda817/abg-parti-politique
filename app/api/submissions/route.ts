@@ -1,14 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { SECRETARY_ROLE_KEYS } from "@/lib/content";
 
 // La correspondance type -> destinataire est décidée ICI, côté serveur — jamais
 // à partir d'un champ envoyé par le client, pour qu'on ne puisse pas faire
 // atterrir un message dans le mauvais espace (ou pire, dans un rôle arbitraire).
+//
+// Exception contrôlée : pour "MESSAGE", l'expéditeur choisit le destinataire
+// (Secrétariat Général ou l'un des 7 Secrétaires Nationaux) dans une liste
+// fermée — validée ci-dessous contre VALID_MESSAGE_RECIPIENTS, jamais acceptée
+// telle quelle.
 const TARGET_ROLE_FOR_TYPE: Record<string, string> = {
-  MESSAGE: "SECRETARIAT",
   DOLEANCE: "SECRETARIAT",
   PROPOSITION: "PRESIDENT",
 };
+
+const VALID_MESSAGE_RECIPIENTS = new Set(["SECRETARIAT", ...SECRETARY_ROLE_KEYS]);
 
 function str(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
@@ -18,7 +25,18 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
 
   const type = str(body.type);
-  const targetRole = TARGET_ROLE_FOR_TYPE[type];
+  let targetRole: string | undefined;
+
+  if (type === "MESSAGE") {
+    const destinataire = str(body.destinataire);
+    if (!VALID_MESSAGE_RECIPIENTS.has(destinataire)) {
+      return NextResponse.json({ error: "Destinataire invalide." }, { status: 400 });
+    }
+    targetRole = destinataire;
+  } else {
+    targetRole = TARGET_ROLE_FOR_TYPE[type];
+  }
+
   if (!targetRole) {
     return NextResponse.json({ error: "Type de demande invalide." }, { status: 400 });
   }

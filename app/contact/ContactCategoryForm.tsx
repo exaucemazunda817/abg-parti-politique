@@ -1,14 +1,20 @@
 "use client";
 
 import { useState } from "react";
+import { secretairesNationaux } from "@/lib/content";
 
 type Category = "MESSAGE" | "DOLEANCE" | "PROPOSITION";
+
+const DESTINATAIRES = [
+  { value: "SECRETARIAT", label: "Secrétariat Général", fonction: "Administration générale du parti" },
+  ...secretairesNationaux.map((s) => ({ value: s.role, label: s.nom, fonction: s.fonction })),
+];
 
 const CATEGORIES: { value: Category; label: string; description: string }[] = [
   {
     value: "MESSAGE",
-    label: "Message général",
-    description: "Une question ou une information pour le Secrétariat Général.",
+    label: "Message à une autorité",
+    description: "Choisissez le Secrétariat Général ou un Secrétaire National précis.",
   },
   {
     value: "DOLEANCE",
@@ -24,6 +30,7 @@ const CATEGORIES: { value: Category; label: string; description: string }[] = [
 
 export default function ContactCategoryForm() {
   const [category, setCategory] = useState<Category>("MESSAGE");
+  const [destinataire, setDestinataire] = useState<string>("SECRETARIAT");
   const [sousType, setSousType] = useState<"Doléance" | "Suggestion">("Doléance");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,6 +44,7 @@ export default function ContactCategoryForm() {
     const formData = new FormData(e.currentTarget);
     const payload = {
       type: category,
+      destinataire: category === "MESSAGE" ? destinataire : undefined,
       sousType: category === "DOLEANCE" ? sousType : undefined,
       nom: formData.get("nom"),
       email: formData.get("email"),
@@ -72,7 +80,9 @@ export default function ContactCategoryForm() {
         <p className="mt-1 text-sm text-foreground/70">
           {category === "PROPOSITION"
             ? "Votre proposition a bien été transmise au Président National."
-            : "Votre message a bien été transmis au Secrétariat Général."}
+            : category === "MESSAGE"
+              ? `Votre message a bien été transmis à ${DESTINATAIRES.find((d) => d.value === destinataire)?.label ?? "son destinataire"}.`
+              : "Votre doléance/suggestion a bien été transmise au Secrétariat Général."}
         </p>
       </div>
     );
@@ -102,6 +112,26 @@ export default function ContactCategoryForm() {
           ))}
         </div>
       </div>
+
+      {category === "MESSAGE" && (
+        <label className="block text-sm">
+          <span className="mb-1 block font-medium text-foreground/80">
+            À qui adresser ce message ? <span className="text-abg-red">*</span>
+          </span>
+          <select
+            value={destinataire}
+            onChange={(e) => setDestinataire(e.target.value)}
+            required
+            className="w-full rounded-lg border border-black/15 bg-white px-3 py-2 focus:border-abg-blue focus:outline-none focus:ring-1 focus:ring-abg-blue"
+          >
+            {DESTINATAIRES.map((d) => (
+              <option key={d.value} value={d.value}>
+                {d.label} — {d.fonction}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
 
       {category === "DOLEANCE" && (
         <div className="flex gap-2">

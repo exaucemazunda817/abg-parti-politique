@@ -1,10 +1,22 @@
-// Session multi-rôles (Secrétariat, Président — d'autres rôles pourront s'ajouter),
+// Session multi-rôles (Secrétariat, Président, 7 Secrétaires Nationaux),
 // un mot de passe partagé par poste (pas de compte nominatif pour l'instant).
 // Utilise Web Crypto (compatible Node et Edge runtime, donc utilisable depuis proxy.ts).
 
-export type Role = "SECRETARIAT" | "PRESIDENT";
+import { secretairesNationaux, SECRETARY_ROLE_KEYS, type SecretaryRole } from "@/lib/content";
 
-export const ROLES: Record<Role, { loginPath: string; spacePath: string; label: string }> = {
+export type Role = "SECRETARIAT" | "PRESIDENT" | SecretaryRole;
+
+export function isValidRole(value: unknown): value is Role {
+  return (
+    value === "SECRETARIAT" ||
+    value === "PRESIDENT" ||
+    SECRETARY_ROLE_KEYS.includes(value as SecretaryRole)
+  );
+}
+
+type RoleInfo = { loginPath: string; spacePath: string; label: string };
+
+const FIXED_ROLES: Record<"SECRETARIAT" | "PRESIDENT", RoleInfo> = {
   SECRETARIAT: {
     loginPath: "/secretariat/login",
     spacePath: "/secretariat",
@@ -16,6 +28,22 @@ export const ROLES: Record<Role, { loginPath: string; spacePath: string; label: 
     label: "Présidence",
   },
 };
+
+const SECRETARY_ROLES: Record<string, RoleInfo> = Object.fromEntries(
+  secretairesNationaux.map((s) => [
+    s.role,
+    {
+      loginPath: `/secretaires/${s.role}/login`,
+      spacePath: `/secretaires/${s.role}`,
+      label: s.nom,
+    },
+  ])
+);
+
+export const ROLES: Record<Role, RoleInfo> = { ...FIXED_ROLES, ...SECRETARY_ROLES } as Record<
+  Role,
+  RoleInfo
+>;
 
 export const SESSION_COOKIE_NAME = "abg_session";
 const SESSION_DURATION_MS = 1000 * 60 * 60 * 24 * 7; // 7 jours
@@ -29,9 +57,11 @@ function getSecret(): string {
 }
 
 export function passwordForRole(role: Role): string | undefined {
-  return role === "SECRETARIAT"
-    ? process.env.SECRETARIAT_PASSWORD
-    : process.env.PRESIDENT_PASSWORD;
+  if (role === "SECRETARIAT") return process.env.SECRETARIAT_PASSWORD;
+  if (role === "PRESIDENT") return process.env.PRESIDENT_PASSWORD;
+  const index = SECRETARY_ROLE_KEYS.indexOf(role as SecretaryRole);
+  if (index === -1) return undefined;
+  return process.env[`SECRETARY_PASSWORD_${index + 1}`];
 }
 
 function toBase64Url(bytes: Uint8Array): string {
@@ -88,7 +118,7 @@ export async function verifySessionToken(
       exp: number;
     };
     if (payload.exp <= Date.now()) return null;
-    if (payload.role !== "SECRETARIAT" && payload.role !== "PRESIDENT") return null;
+    if (!isValidRole(payload.role)) return null;
     return { role: payload.role };
   } catch {
     return null;

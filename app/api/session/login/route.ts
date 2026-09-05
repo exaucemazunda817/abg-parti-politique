@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   createSessionToken,
+  isValidRole,
   passwordForRole,
   SESSION_COOKIE_NAME,
   SESSION_MAX_AGE_SECONDS,
-  type Role,
 } from "@/lib/session";
 
 function timingSafeEqual(a: string, b: string): boolean {
@@ -19,16 +19,16 @@ function timingSafeEqual(a: string, b: string): boolean {
 export async function POST(request: NextRequest) {
   const { role, password } = await request.json();
 
-  if (role !== "SECRETARIAT" && role !== "PRESIDENT") {
+  if (!isValidRole(role)) {
     return NextResponse.json({ error: "Rôle invalide." }, { status: 400 });
   }
 
-  const expected = passwordForRole(role as Role);
+  const expected = passwordForRole(role);
   if (!expected || typeof password !== "string" || !timingSafeEqual(password, expected)) {
     return NextResponse.json({ error: "Mot de passe incorrect." }, { status: 401 });
   }
 
-  const token = await createSessionToken(role as Role);
+  const token = await createSessionToken(role);
   const response = NextResponse.json({ ok: true });
   response.cookies.set(SESSION_COOKIE_NAME, token, {
     httpOnly: true,

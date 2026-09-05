@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ROLES, SESSION_COOKIE_NAME, verifySessionToken, type Role } from "@/lib/session";
+import { isValidRole, ROLES, SESSION_COOKIE_NAME, verifySessionToken, type Role } from "@/lib/session";
 
 function roleForPath(pathname: string): Role | null {
   if (pathname.startsWith("/secretariat") || pathname.startsWith("/api/secretariat")) {
@@ -7,6 +7,10 @@ function roleForPath(pathname: string): Role | null {
   }
   if (pathname.startsWith("/president") || pathname.startsWith("/api/president")) {
     return "PRESIDENT";
+  }
+  const secretaryMatch = pathname.match(/^\/(?:api\/)?secretaires\/([^/]+)/);
+  if (secretaryMatch && isValidRole(secretaryMatch[1])) {
+    return secretaryMatch[1] as Role;
   }
   return null;
 }
@@ -35,5 +39,12 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/secretariat/:path*", "/president/:path*", "/api/secretariat/:path*", "/api/president/:path*"],
+  matcher: [
+    "/secretariat/:path*",
+    "/president/:path*",
+    "/secretaires/:path*",
+    "/api/secretariat/:path*",
+    "/api/president/:path*",
+    "/api/secretaires/:path*",
+  ],
 };

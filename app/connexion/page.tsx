@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { party, presidentNational } from "@/lib/content";
+import { party, presidentNational, secretairesNationaux } from "@/lib/content";
 import { ROLES } from "@/lib/session";
 
 export const metadata: Metadata = {
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function ConnexionPage() {
   return (
-    <div className="mx-auto flex min-h-[70vh] max-w-2xl flex-col items-center justify-center px-4 py-12 text-center sm:px-6">
+    <div className="mx-auto flex max-w-2xl flex-col items-center px-4 py-12 text-center sm:px-6">
       <Image
         src="/logo-abg.png"
         alt={`Logo du parti ${party.sigle}`}
@@ -36,6 +36,27 @@ export default function ConnexionPage() {
           title="Présidence"
           description={`Propositions de projet et de partenariat — ${presidentNational.nom}`}
         />
+      </div>
+
+      <div className="mt-12 w-full text-left">
+        <p className="mb-3 text-center text-sm font-semibold uppercase tracking-wide text-foreground/50">
+          Secrétaires Nationaux
+        </p>
+        <div className="divide-y divide-black/10 overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm">
+          {secretairesNationaux.map((s) => (
+            <Link
+              key={s.role}
+              href={ROLES[s.role].loginPath}
+              className="flex items-center justify-between gap-4 px-5 py-4 transition-colors hover:bg-abg-blue-dark/5"
+            >
+              <span>
+                <span className="block font-semibold text-abg-blue-dark">{s.nom}</span>
+                <span className="block text-xs text-foreground/60">{s.fonction}</span>
+              </span>
+              <span aria-hidden className="shrink-0 text-abg-blue-dark">→</span>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );
