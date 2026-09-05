@@ -1,22 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ADMIN_COOKIE_NAME, verifyAdminSessionToken } from "@/lib/admin-session";
+import { ROLES, SESSION_COOKIE_NAME, verifySessionToken, type Role } from "@/lib/session";
+
+function roleForPath(pathname: string): Role | null {
+  if (pathname.startsWith("/secretariat") || pathname.startsWith("/api/secretariat")) {
+    return "SECRETARIAT";
+  }
+  if (pathname.startsWith("/president") || pathname.startsWith("/api/president")) {
+    return "PRESIDENT";
+  }
+  return null;
+}
 
 export async function proxy(request: NextRequest) {
-  if (request.nextUrl.pathname === "/admin/login") {
+  const { pathname } = request.nextUrl;
+  const role = roleForPath(pathname);
+  if (!role) return NextResponse.next();
+
+  if (pathname === ROLES[role].loginPath) {
     return NextResponse.next();
   }
 
-  const token = request.cookies.get(ADMIN_COOKIE_NAME)?.value;
-  const valid = await verifyAdminSessionToken(token);
+  const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
+  const session = await verifySessionToken(token);
 
-  if (!valid) {
-    const loginUrl = new URL("/admin/login", request.url);
-    return NextResponse.redirect(loginUrl);
+  if (!session || session.role !== role) {
+    // Une route API protégée renvoie 401 plutôt qu'une redirection HTML.
+    if (pathname.startsWith("/api/")) {
+      return NextResponse.json({ error: "Non authentifié." }, { status: 401 });
+    }
+    return NextResponse.redirect(new URL(ROLES[role].loginPath, request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/secretariat/:path*", "/president/:path*", "/api/secretariat/:path*", "/api/president/:path*"],
 };

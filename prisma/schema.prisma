@@ -49,3 +49,33 @@ model Member {
 
   @@index([status])
 }
+
+// Messages envoyés au parti depuis le site public, routés vers l'espace
+// d'une autorité selon leur type :
+// - "MESSAGE" (message général) et "DOLEANCE" (doléance/suggestion) -> Secrétariat
+// - "PROPOSITION" (projet ou partenariat) -> Président
+// La correspondance type -> targetRole est décidée côté serveur (jamais par le
+// client) dans app/api/submissions/route.ts.
+model Submission {
+  id         String @id @default(cuid())
+  type       String
+  targetRole String
+
+  // "Doléance" vs "Suggestion" (uniquement pour type = "DOLEANCE")
+  sousType String?
+
+  nom          String?
+  email        String?
+  telephone    String?
+  organisation String?
+
+  sujet   String
+  message String
+
+  status    String    @default("NOUVEAU")
+  createdAt DateTime  @default(now())
+  readAt    DateTime?
+  treatedAt DateTime?
+
+  @@index([targetRole, status])
+}

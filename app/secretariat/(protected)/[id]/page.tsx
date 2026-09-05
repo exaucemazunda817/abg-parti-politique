@@ -17,8 +17,8 @@ export default async function AdminMemberDetailPage({
   const photoDataUrl = `data:${photoMimeType(member.photoPath)};base64,${photoBytes.toString("base64")}`;
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-      <Link href="/admin" className="text-sm text-abg-blue hover:underline">
+    <div className="mx-auto max-w-3xl">
+      <Link href="/secretariat" className="text-sm text-abg-blue hover:underline">
         ← Retour à la liste
       </Link>
 

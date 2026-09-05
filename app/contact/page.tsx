@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { party } from "@/lib/content";
+import ContactCategoryForm from "./ContactCategoryForm";
 
 export const metadata: Metadata = {
   title: `Contact — ${party.sigle}`,
@@ -47,6 +48,17 @@ export default function ContactPage() {
               Adresse indicative — à confirmer avec le Secrétariat Général avant publication.
             </p>
           )}
+        </div>
+      </div>
+
+      <div className="mt-12">
+        <h2 className="text-xl font-bold text-abg-green-dark">Nous écrire</h2>
+        <p className="mt-1 text-sm text-foreground/60">
+          Message général, doléance, suggestion ou proposition de projet/partenariat — choisissez
+          la catégorie qui correspond, votre demande sera transmise à la bonne personne.
+        </p>
+        <div className="mt-6 rounded-2xl border border-black/10 bg-abg-cream/60 p-6 sm:p-8">
+          <ContactCategoryForm />
         </div>
       </div>
     </div>

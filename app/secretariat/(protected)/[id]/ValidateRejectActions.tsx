@@ -20,7 +20,7 @@ export default function ValidateRejectActions({
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/admin/members/${memberId}/validate`, { method: "POST" });
+      const res = await fetch(`/api/secretariat/members/${memberId}/validate`, { method: "POST" });
       if (!res.ok) throw new Error();
       router.refresh();
     } catch {
@@ -34,7 +34,7 @@ export default function ValidateRejectActions({
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/admin/members/${memberId}/reject`, {
+      const res = await fetch(`/api/secretariat/members/${memberId}/reject`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reason }),

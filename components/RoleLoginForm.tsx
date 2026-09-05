@@ -2,8 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import type { Role } from "@/lib/session";
 
-export default function LoginForm() {
+export default function RoleLoginForm({ role, spacePath }: { role: Role; spacePath: string }) {
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -15,10 +16,10 @@ export default function LoginForm() {
     setError(null);
 
     try {
-      const res = await fetch("/api/admin/login", {
+      const res = await fetch("/api/session/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ role, password }),
       });
       if (!res.ok) {
         const data = await res.json();
@@ -26,7 +27,7 @@ export default function LoginForm() {
         setLoading(false);
         return;
       }
-      router.push("/admin");
+      router.push(spacePath);
       router.refresh();
     } catch {
       setError("Impossible de se connecter — vérifiez votre connexion.");

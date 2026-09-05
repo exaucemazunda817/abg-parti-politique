@@ -3,8 +3,9 @@ import path from "path";
 
 // Les photos des fiches d'adhésion sont stockées HORS de `public/` : ce sont des
 // données personnelles, elles ne doivent jamais être accessibles par une simple URL
-// devinable. Seules les routes admin authentifiées peuvent les relire (voir
-// app/admin/[id]/page.tsx qui les lit directement depuis le disque côté serveur).
+// devinable. Seul le Secrétariat authentifié peut les relire (voir
+// app/secretariat/(protected)/[id]/page.tsx qui les lit directement depuis le disque
+// côté serveur).
 const STORAGE_DIR = path.join(process.cwd(), "storage", "photos");
 
 const ALLOWED_TYPES: Record<string, string> = {

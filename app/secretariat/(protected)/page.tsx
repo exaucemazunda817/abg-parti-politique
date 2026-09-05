@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { party } from "@/lib/content";
-import LogoutButton from "./LogoutButton";
 
 export const metadata: Metadata = {
   title: `Secrétariat — Adhésions — ${party.sigle}`,
@@ -20,7 +19,7 @@ const STATUS_STYLES: Record<string, string> = {
   REJECTED: "bg-red-50 text-abg-red-dark",
 };
 
-export default async function AdminMembersPage({
+export default async function SecretariatAdhesionsPage({
   searchParams,
 }: {
   searchParams: Promise<{ status?: string }>;
@@ -39,22 +38,17 @@ export default async function AdminMembersPage({
   const countFor = (s: string) => counts.find((c) => c.status === s)?._count ?? 0;
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-extrabold tracking-tight text-abg-green-dark">
-          Dossiers d&apos;adhésion
-        </h1>
-        <LogoutButton />
+    <div>
+      <h2 className="text-lg font-bold text-foreground">Dossiers d&apos;adhésion</h2>
+
+      <div className="mt-4 flex flex-wrap gap-2 text-sm">
+        <FilterTab href="/secretariat" active={!filter} label={`Tous (${counts.reduce((s, c) => s + c._count, 0)})`} />
+        <FilterTab href="/secretariat?status=PENDING" active={filter === "PENDING"} label={`En attente (${countFor("PENDING")})`} />
+        <FilterTab href="/secretariat?status=VALIDATED" active={filter === "VALIDATED"} label={`Validés (${countFor("VALIDATED")})`} />
+        <FilterTab href="/secretariat?status=REJECTED" active={filter === "REJECTED"} label={`Rejetés (${countFor("REJECTED")})`} />
       </div>
 
-      <div className="mt-6 flex flex-wrap gap-2 text-sm">
-        <FilterTab href="/admin" active={!filter} label={`Tous (${counts.reduce((s, c) => s + c._count, 0)})`} />
-        <FilterTab href="/admin?status=PENDING" active={filter === "PENDING"} label={`En attente (${countFor("PENDING")})`} />
-        <FilterTab href="/admin?status=VALIDATED" active={filter === "VALIDATED"} label={`Validés (${countFor("VALIDATED")})`} />
-        <FilterTab href="/admin?status=REJECTED" active={filter === "REJECTED"} label={`Rejetés (${countFor("REJECTED")})`} />
-      </div>
-
-      <div className="mt-6 overflow-x-auto rounded-xl border border-black/10 bg-white">
+      <div className="mt-4 overflow-x-auto rounded-xl border border-black/10 bg-white">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-black/10 bg-black/[0.02] text-xs uppercase tracking-wide text-foreground/50">
             <tr>
@@ -69,7 +63,7 @@ export default async function AdminMembersPage({
             {members.map((m) => (
               <tr key={m.id} className="border-b border-black/5 last:border-0 hover:bg-black/[0.015]">
                 <td className="px-4 py-3">
-                  <Link href={`/admin/${m.id}`} className="font-medium text-abg-blue hover:underline">
+                  <Link href={`/secretariat/${m.id}`} className="font-medium text-abg-blue hover:underline">
                     {m.prenom} {m.postNom} {m.nom}
                   </Link>
                 </td>

@@ -2,12 +2,12 @@
 
 import { useRouter } from "next/navigation";
 
-export default function LogoutButton() {
+export default function RoleLogoutButton({ loginPath }: { loginPath: string }) {
   const router = useRouter();
 
   async function handleLogout() {
-    await fetch("/api/admin/logout", { method: "POST" });
-    router.push("/admin/login");
+    await fetch("/api/session/logout", { method: "POST" });
+    router.push(loginPath);
     router.refresh();
   }
 

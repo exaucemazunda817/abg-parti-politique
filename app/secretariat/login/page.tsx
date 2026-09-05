@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { party } from "@/lib/content";
-import LoginForm from "./LoginForm";
+import { ROLES } from "@/lib/session";
+import RoleLoginForm from "@/components/RoleLoginForm";
 
 export const metadata: Metadata = {
   title: `Espace secrétariat — ${party.sigle}`,
 };
 
-export default function AdminLoginPage() {
+export default function SecretariatLoginPage() {
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center px-4 py-12 sm:px-6">
       <div className="mb-8 flex flex-col items-center text-center">
@@ -24,7 +25,7 @@ export default function AdminLoginPage() {
         <p className="mt-1 text-sm text-foreground/60">Accès réservé au personnel du parti</p>
       </div>
       <div className="rounded-2xl border border-black/10 bg-white p-6 shadow-sm">
-        <LoginForm />
+        <RoleLoginForm role="SECRETARIAT" spacePath={ROLES.SECRETARIAT.spacePath} />
       </div>
     </div>
   );
