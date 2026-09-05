@@ -9,7 +9,8 @@ il pilote sans coder lui-même.
 ## Le projet
 Site vitrine pour l'ABG, parti politique congolais enregistré par l'Arrêté ministériel
 n° 005/2017 du 16 juin 2017 — pages Accueil, Le Parti, Direction, Programme, Actualités,
-Contact — **plus un module d'adhésion en ligne et deux espaces d'autorité** (voir ci-dessous).
+Contact — **plus un module d'adhésion en ligne et 9 espaces d'autorité** (Secrétariat,
+Présidence, et un par Secrétaire National — voir ci-dessous).
 
 ## Stack
 - Next.js (App Router) + TypeScript + Tailwind v4
@@ -19,51 +20,69 @@ Contact — **plus un module d'adhésion en ligne et deux espaces d'autorité** 
   habituel : SQLite en dev, Postgres/Neon en prod)
 - `pdf-lib` + `qrcode` pour générer la carte provisoire d'adhésion
 
-## Espaces d'autorité : Secrétariat et Présidence (ajouté le 05/09/2026)
-Deux rôles distincts, chacun avec son propre mot de passe (`SECRETARIAT_PASSWORD`,
-`PRESIDENT_PASSWORD` dans `.env` — jamais affichés dans le chat, voir mémoire
+## Espaces d'autorité : Secrétariat, Présidence, 7 Secrétaires Nationaux
+Chaque rôle a son propre mot de passe (`.env` — jamais affichés dans le chat, voir mémoire
 `no-credentials-in-chat-even-dev`) et son propre espace protégé :
-- **`/secretariat`** (login : `/secretariat/login`) — gère les dossiers d'adhésion
-  (`/secretariat`, valider/rejeter) et les Messages & Doléances (`/secretariat/messages`).
-- **`/president`** (login : `/president/login`) — reçoit uniquement les Propositions de
-  projet/partenariat.
+- **`/secretariat`** (login : `/secretariat/login`, mot de passe `SECRETARIAT_PASSWORD`) —
+  gère les dossiers d'adhésion (`/secretariat`, valider/rejeter) et les Messages &
+  Doléances qui lui sont adressés (`/secretariat/messages`).
+- **`/president`** (login : `/president/login`, mot de passe `PRESIDENT_PASSWORD`) — reçoit
+  uniquement les Propositions de projet/partenariat.
+- **`/secretaires/[role]`** (ajouté le 05/09/2026, sur demande de Mazunda) — un espace par
+  Secrétaire National, mot de passe `SECRETARY_PASSWORD_<n>` où `<n>` est la position (1 à
+  7) dans le tableau `secretairesNationaux` de `lib/content.ts`. Route **dynamique unique**
+  (pas 7 dossiers dupliqués) : `[role]` correspond au champ `role` de chaque secrétaire
+  (ex. `sec-enseignement-superieur`). Chaque secrétaire ne voit QUE les messages qui lui
+  sont adressés nommément — jamais ceux des autres secrétaires ni ceux du Secrétariat
+  Général.
 
-D'autres rôles pourront s'ajouter plus tard (ex. un espace par Secrétaire National) — la
-structure (`lib/session.ts`, type `Role`, table `ROLES`) est faite pour ça, mais **pour
-l'instant seuls Secrétariat et Président existent**, sur décision explicite de Mazunda
-(scope volontairement réduit pour livrer vite).
+Le type `Role` et la table `ROLES` (`lib/session.ts`) sont **générés dynamiquement** à
+partir de `secretairesNationaux` — ajouter un futur rôle qui n'est pas un Secrétaire
+National (ex. un Trésorier) demanderait d'étendre ce fichier, mais l'ajout d'un
+Secrétaire National de plus dans `lib/content.ts` suffirait à lui créer son espace,
+sans toucher au reste.
 
 **Auth** : un seul mot de passe partagé par rôle (pas de compte nominatif pour l'instant —
 Mazunda a choisi cette option pour démarrer). Session = cookie HttpOnly unique
 (`abg_session`) signé HMAC-SHA256, portant le rôle dans son payload signé — **une seule
-session à la fois par navigateur** (se connecter en Président écrase une session
-Secrétariat active, et vice versa). `proxy.ts` vérifie le rôle attendu à la fois pour les
-pages (`/secretariat/*`, `/president/*`) et pour **les routes API mutantes**
-(`/api/secretariat/*`, `/api/president/*`) — point de sécurité important : la toute
-première version de l'espace admin (avant ce rôle multiple) ne protégeait QUE les pages,
-pas les routes API de validation/rejet, qui étaient donc appelables sans authentification.
-Corrigé dans ce refactor, à ne jamais régresser.
+session à la fois par navigateur** (se connecter dans un espace écrase la session active
+d'un autre). `proxy.ts` vérifie le rôle attendu à la fois pour les pages (`/secretariat/*`,
+`/president/*`, `/secretaires/[role]/*`) et pour **les routes API mutantes**
+(`/api/secretariat/*`, `/api/president/*`, `/api/secretaires/[role]/*`) — point de sécurité
+important : la toute première version de l'espace admin (avant le système multi-rôles) ne
+protégeait QUE les pages, pas les routes API de validation/rejet, qui étaient donc
+appelables sans authentification. Corrigé, à ne jamais régresser. **Piège rencontré en
+ajoutant les 7 espaces secrétaires** : `app/api/session/login/route.ts` avait sa propre
+vérification de rôle codée en dur (`role !== "SECRETARIAT" && role !== "PRESIDENT"`),
+oubliée lors du passage à un type `Role` dynamique — elle rejetait tout nouveau rôle avec
+"Rôle invalide." Corrigé en la faisant utiliser `isValidRole()`. **Si un futur rôle est
+ajouté et que la connexion échoue avec ce message, vérifier en premier que ce fichier
+utilise bien `isValidRole()` et pas une comparaison figée.**
 
-Chaque page de login (`app/secretariat/login`, `app/president/login`) est un **frère**,
-pas un enfant, du layout protégé (`app/secretariat/(protected)/layout.tsx`,
-`app/president/(protected)/layout.tsx`) — via un route group `(protected)`. Sinon la page
-de login hériterait du header/logout/nav pensés pour quelqu'un déjà connecté.
+Chaque page de login (`app/secretariat/login`, `app/president/login`,
+`app/secretaires/[role]/login`) est un **frère**, pas un enfant, du layout protégé
+(`.../(protected)/layout.tsx`) — via un route group `(protected)`. Sinon la page de login
+hériterait du header/logout/nav pensés pour quelqu'un déjà connecté.
 
 ## Messages du site public : Message, Doléance/Suggestion, Proposition (05/09/2026)
 Un seul formulaire public, sur `/contact` (`ContactCategoryForm.tsx`), avec un sélecteur de
 catégorie à 3 choix. Le routage catégorie → rôle destinataire est décidé **côté serveur**
-dans `app/api/submissions/route.ts` (`TARGET_ROLE_FOR_TYPE`), jamais à partir d'un champ
-envoyé par le client — sinon n'importe qui pourrait faire atterrir un message dans le
-mauvais espace :
-- `MESSAGE` (message général) → Secrétariat
-- `DOLEANCE` (doléance ou suggestion, sous-type au choix) → Secrétariat
-- `PROPOSITION` (projet ou partenariat, avec champ organisation) → Président
+dans `app/api/submissions/route.ts`, jamais à partir d'un champ envoyé par le client — sinon
+n'importe qui pourrait faire atterrir un message dans le mauvais espace :
+- `MESSAGE` (message général) → l'expéditeur **choisit lui-même le destinataire** dans un
+  menu déroulant (Secrétariat Général ou l'un des 7 Secrétaires Nationaux, par nom). Le
+  choix envoyé par le client (`destinataire`) est validé contre `VALID_MESSAGE_RECIPIENTS`
+  (liste fermée : `SECRETARIAT` + les 7 clés de `SECRETARY_ROLE_KEYS`) avant d'être utilisé
+  comme `targetRole` — le client ne peut pas envoyer un rôle arbitraire, seulement choisir
+  parmi les destinataires réels.
+- `DOLEANCE` (doléance ou suggestion, sous-type au choix) → toujours Secrétariat Général
+  (pas de choix de destinataire — une doléance concerne l'administration du parti).
+- `PROPOSITION` (projet ou partenariat, avec champ organisation) → toujours Président.
 
 Un seul modèle Prisma `Submission` (champs `type`/`targetRole`/`sousType` génériques) sert
-les trois catégories — ajouter une 4e catégorie plus tard ne demande pas de migration,
-juste une entrée dans `TARGET_ROLE_FOR_TYPE` et le bon routage dans le formulaire. Statut
-`NOUVEAU`/`LU`/`TRAITE`, passage automatique à `LU` à l'ouverture du détail côté
-destinataire.
+toutes les catégories — `targetRole` est une simple chaîne, donc router vers un nouveau
+rôle (secrétaire compris) ne demande aucune migration. Statut `NOUVEAU`/`LU`/`TRAITE`,
+passage automatique à `LU` à l'ouverture du détail côté destinataire.
 
 ## Module d'adhésion en ligne (ajouté le 05/09/2026)
 Un visiteur peut remplir une fiche d'adhésion (`/adhesion`, avec upload photo obligatoire)
@@ -148,12 +167,15 @@ récupération directe depuis le chat avait échoué faute d'accès disque à l'
   **implique de choisir une vraie base de données de production** (SQLite ne convient pas
   à Vercel/serverless, contrairement au dev local)
 - Décider si une page "Actualités" avec vrai système de publication est nécessaire à terme
-- Décider d'un canal de notification (SMS/WhatsApp/email) pour prévenir un demandeur
-  d'adhésion ou l'auteur d'un message quand son dossier est traité, plutôt que de compter
-  sur lui pour revérifier son statut lui-même
-- Si Mazunda veut étendre à d'autres rôles (un espace par Secrétaire National, comptes
-  nominatifs plutôt que mot de passe partagé), la structure de `lib/session.ts` le permet
-  sans tout refaire — mais ça reste à construire, ce n'est pas fait
+- **Canal de notification** (SMS/WhatsApp/email) pour prévenir un demandeur d'adhésion ou
+  l'auteur d'un message quand son dossier est traité, plutôt que de compter sur lui pour
+  revérifier son statut lui-même — **prochain chantier convenu avec Mazunda le 05/09/2026**,
+  choix du canal encore en attente (compromis simplicité de mise en place vs canal
+  réellement consulté par le public congolais — voir échange du 05/09 pour le détail des
+  options : email/SMS/WhatsApp).
+- Comptes nominatifs par personne plutôt que mot de passe partagé par poste, si Mazunda le
+  demande un jour — la structure de `lib/session.ts` ne s'y oppose pas mais ce n'est pas
+  construit.
 
 ## Note technique — Next.js 16
 Ce projet utilise Next.js 16 (breaking changes vs versions antérieures). `next dev` régénère
