@@ -149,9 +149,15 @@ Tout le contenu du site est centralisé dans `lib/content.ts`. Deux catégories 
   National) : nom complet du parti, sigle, devise, base légale d'enregistrement, siège
   social, téléphone du Secrétariat Général, nom du Président National, liste des 7
   Secrétaires Nationaux avec leurs portefeuilles exacts.
+- **Réel, source = brochure officielle de présentation du parti** (6 photos fournies par
+  Mazunda le 12/09/2026, déposées à la racine du projet, volontairement hors suivi Git —
+  ce sont des sources de travail, pas des fichiers utilisés tels quels par le site) :
+  `missionText`, `histoireText`, `ideologieText`, `valeurs` (4) et `programme` (10 axes
+  détaillés) dans `lib/content.ts`. Recoupé avec la source du 04/09 sans contradiction
+  (date de création, arrêté d'enregistrement, siège, téléphone).
 - **Placeholder, marqué `[À COMPLÉTER]`** dans le code et affiché avec un encart visuel
-  "À compléter" sur le site : mission/vision en prose, histoire du parti, valeurs,
-  programme détaillé, actualités, adresse email (inventée, à confirmer).
+  "À compléter" sur le site : uniquement la page Actualités (aucune actualité publiée pour
+  le moment) et l'adresse email (inventée, à confirmer).
 
 **Ne jamais transformer un placeholder en contenu définitif sans confirmation explicite de
 Mazunda** — il s'agit d'un vrai parti politique enregistré, pas d'un exercice fictif.
@@ -177,7 +183,21 @@ en connaissance de cause** : plus simple à activer aujourd'hui que SMS (compte 
 public congolais — à revoir plus tard si besoin, `lib/email.ts` n'est pas couplé au reste.
 
 ## Reste à faire
-- Contenu définitif de toutes les sections `[À COMPLÉTER]`
+- Contenu définitif : fait pour mission/histoire/idéologie/valeurs/programme (12/09/2026) ;
+  reste la page Actualités (aucune actualité publiée pour le moment) et l'adresse email
+  (encore inventée, à confirmer)
+- **Masquer les noms des Secrétaires Nationaux, décidé par Mazunda le 12/09/2026** : sur la
+  page Direction (et partout où ils apparaissent), n'afficher que le titre/portefeuille de
+  chaque Secrétaire National (ex. « Secrétaire National chargé de... »), sans son nom. Seul
+  le nom du Président National reste affiché. Vérifier l'impact sur `/secretaires/[role]`
+  (l'espace protégé de connexion, lui, doit rester fonctionnel par rôle — ne pas casser
+  l'authentification en retirant les noms de l'affichage public)
+- **Carte d'adhésion provisoire à ne délivrer qu'après validation du dossier, décidé par
+  Mazunda le 12/09/2026** — changement de logique par rapport à l'actuel : aujourd'hui la
+  carte PDF provisoire est générée immédiatement à la soumission (voir "Module d'adhésion
+  en ligne" ci-dessus) ; il faudra que le visiteur ne puisse l'obtenir/télécharger qu'une
+  fois son dossier validé par le Secrétariat (donc après passage au statut validé, plus
+  seulement `PENDING`)
 - Nom de domaine + déploiement (probablement Vercel, comme les autres projets de Mazunda) —
   **implique de choisir une vraie base de données de production** (SQLite ne convient pas
   à Vercel/serverless, contrairement au dev local)

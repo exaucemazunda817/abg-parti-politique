@@ -1,12 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import PlaceholderNote from "@/components/PlaceholderNote";
-import {
-  missionPlaceholder,
-  party,
-  presidentNational,
-  valeursPlaceholder,
-} from "@/lib/content";
+import { missionText, party, presidentNational, valeurs } from "@/lib/content";
 
 export default function Home() {
   return (
@@ -33,7 +27,7 @@ export default function Home() {
               « {party.devise} »
             </p>
             <p className="mt-4 max-w-2xl text-base text-white/85 sm:text-lg">
-              {missionPlaceholder}
+              {missionText}
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-4 md:justify-start">
               <Link
@@ -83,7 +77,7 @@ export default function Home() {
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
         <h2 className="text-2xl font-bold text-abg-green-dark">Nos valeurs</h2>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {valeursPlaceholder.map((valeur) => (
+          {valeurs.map((valeur) => (
             <div
               key={valeur}
               className="rounded-lg border border-black/10 bg-white p-4 text-sm text-foreground/80 shadow-sm"
@@ -91,11 +85,6 @@ export default function Home() {
               {valeur}
             </div>
           ))}
-        </div>
-        <div className="mt-4">
-          <PlaceholderNote>
-            Les valeurs officielles du parti seront listées ici une fois fournies.
-          </PlaceholderNote>
         </div>
       </section>
     </div>

@@ -28,5 +28,8 @@ export async function POST(request: NextRequest) {
     prenom: member.prenom,
     membershipNo: member.membershipNo,
     rejectedReason: member.rejectedReason,
+    createdAt: member.createdAt,
+    validatedAt: member.validatedAt,
+    rejectedAt: member.rejectedAt,
   });
 }

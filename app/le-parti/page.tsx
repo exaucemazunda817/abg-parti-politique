@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
-import PlaceholderNote from "@/components/PlaceholderNote";
 import {
-  histoirePlaceholder,
-  missionPlaceholder,
+  histoireText,
+  ideologieText,
+  missionText,
   party,
-  valeursPlaceholder,
+  valeurs,
 } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -32,24 +32,23 @@ export default function LePartiPage() {
 
         <section className="mt-8 rounded-2xl bg-abg-green-dark/5 p-6 sm:p-8">
           <h2 className="text-xl font-bold text-abg-green-dark">Mission</h2>
-          <p className="mt-3 text-foreground/80">{missionPlaceholder}</p>
-          <div className="mt-4">
-            <PlaceholderNote />
-          </div>
+          <p className="mt-3 text-foreground/80">{missionText}</p>
         </section>
 
         <section className="mt-8">
           <h2 className="text-xl font-bold text-abg-blue-dark">Histoire</h2>
-          <p className="mt-3 text-foreground/80">{histoirePlaceholder}</p>
-          <div className="mt-4">
-            <PlaceholderNote />
-          </div>
+          <p className="mt-3 text-foreground/80">{histoireText}</p>
+        </section>
+
+        <section className="mt-8">
+          <h2 className="text-xl font-bold text-abg-blue-dark">Idéologie et projet de société</h2>
+          <p className="mt-3 text-foreground/80">{ideologieText}</p>
         </section>
 
         <section className="mt-10">
           <h2 className="text-xl font-bold text-abg-green-dark">Nos valeurs</h2>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-            {valeursPlaceholder.map((valeur, i) => (
+            {valeurs.map((valeur, i) => (
               <li
                 key={valeur}
                 className={`rounded-xl border-l-4 bg-white p-4 text-sm text-foreground/80 shadow-sm ${VALUE_ACCENTS[i % VALUE_ACCENTS.length]}`}
@@ -58,11 +57,6 @@ export default function LePartiPage() {
               </li>
             ))}
           </ul>
-          <div className="mt-4">
-            <PlaceholderNote>
-              Les valeurs officielles du parti seront listées ici une fois fournies.
-            </PlaceholderNote>
-          </div>
         </section>
       </div>
     </div>
